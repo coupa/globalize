@@ -60,6 +60,10 @@ module Globalize
         "#{translation_class.table_name}.#{name}"
       end
 
+      def globalize_locale
+        ::Globalize.locale
+      end
+
       private
 
       # Override the default relation method in order to return a subclass

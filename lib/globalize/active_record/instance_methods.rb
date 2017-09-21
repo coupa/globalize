@@ -22,7 +22,7 @@ module Globalize
       def write_attribute(name, value, options = {})
         return super(name, value) unless translated?(name)
 
-        options = {:locale => Globalize.locale}.merge(options)
+        options = {:locale => self.class.globalize_locale}.merge(options)
 
         # Dirty tracking, paraphrased from
         # ActiveRecord::AttributeMethods::Dirty#write_attribute.
@@ -48,7 +48,7 @@ module Globalize
         if name == :locale
           self.try(:locale).presence || self.translation.locale
         elsif self.class.translated?(name)
-          if (value = globalize.fetch(options[:locale] || Globalize.locale, name))
+          if (value = globalize.fetch(options[:locale] || self.class.globalize_locale, name))
             value
           else
             super(name)
@@ -108,7 +108,7 @@ module Globalize
       end
 
       def translation
-        translation_for(::Globalize.locale)
+        translation_for(self.class.globalize_locale)
       end
 
       def translation_for(locale, build_if_missing = true)
@@ -146,7 +146,7 @@ module Globalize
       end
 
       def rollback
-        translation_caches[::Globalize.locale] = translation.previous_version
+        translation_caches[globalize_locale] = translation.previous_version
       end
 
       def save(*)
